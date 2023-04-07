@@ -1,16 +1,16 @@
 <?php
 
-namespace VendorName\Skeleton\Facades;
+namespace Ahrmerd\TestGenerator\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \VendorName\Skeleton\Skeleton
  */
-class Skeleton extends Facade
+class TestGenerator extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \VendorName\Skeleton\Skeleton::class;
+        return \Ahrmerd\TestGenerator\TestGenerator::class;
     }
 }
