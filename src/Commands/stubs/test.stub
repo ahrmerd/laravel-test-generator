@@ -1,0 +1,180 @@
+<?php
+
+use App\Http\Controllers\{{ Model }}Controller;
+use App\Http\Requests\Update{{ Model }}Request;
+use App\Http\Requests\Store{{ Model }}Request;
+use App\Models\{{ Model }};
+use Ahrmerd\TestGenerator\TestHelpers;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
+
+
+
+/**
+ * NOTE: this are generated test based on your model and form request. You can modify the tests to suite your usecase
+ * ensure your factories and form request are properly set
+ */
+
+
+//leave an empty string if you don't use api versioning
+$apiVersion = "v1";
+
+
+beforeEach(function () use ($apiVersion) {
+    $user = User::factory()->create();
+
+    //prepares the route by inserting the api version if it exists
+    $this->apiUrl = "/api" . (empty($apiVersion) ? '' : "/$apiVersion") . "/{{plrModel}}";
+    $this->webUrl = "/{{plrModel}}";
+    $this->user = Sanctum::actingAs($user);
+
+});
+
+it('can list all {{plrModel}}', function (){
+    ${{plrModel}}_ids = {{ Model }}::factory()->count(5)->create()->pluck('id');
+    ${{plrModel}} = {{ Model }}::query()->findMany(${{plrModel}}_ids);
+
+    $apiResponse = $this->getJson($this->apiUrl);
+    $webResponse = $this->get($this->webUrl);
+
+    //checks api response
+    expect($apiResponse->assertStatus(200)->json()['data'])->toMatchArray(${{plrModel}}->toArray());
+
+    //checks webResponse
+    $webResponse->assertStatus(200)
+        ->assertViewIs('{{plrModel}}.index')
+        ->assertViewHas('resource', function ($resources) use (${{plrModel}}) {
+            expect($resources->resolve())->toMatchArray(${{plrModel}}->toArray());
+            return true;
+        });
+
+});
+
+
+it('can create a {{ lcModel }}', function () {
+
+    //ensures all {{ lcModel }} are deleted
+    {{ Model }}::query()->delete();
+    $data = {{ Model }}::factory()->raw();
+
+    //creates a {{lcModel}}} using the api
+    $apiResponse = $this->postJson($this->apiUrl, $data);
+
+    //api assertions
+    $this->assertDatabaseHas('{{plrModel}}', $data);
+    $apiResponse->assertStatus(201);
+    expect($apiResponse->json()['data'])->toHaveKeys(array_keys($data));
+
+    //deletes all {{plrModel}} to ensure there is no record before creating using web routes
+    {{ Model }}::query()->delete();
+    //ensures the created {{lcModel}} with api is missing
+    $this->assertDatabaseMissing('{{plrModel}}', $data);
+
+    //web assertion
+    $webResponse = $this->post($this->webUrl, $data);
+    $this->assertDatabaseHas('{{plrModel}}', $data);
+    $id = {{ Model }}::query()->latest()->pluck('id')->first();
+    $webResponse->assertRedirect(route('{{plrModel}}.show', $id));
+
+
+});
+
+
+it('can show a {{ lcModel }}', function () {
+    ${{ lcModel }} = {{ Model }}::factory()->create();
+
+    $apiResponse = $this->getJson($this->apiUrl . '/' . ${{ lcModel }}->id);
+    $webResponse = $this->get($this->webUrl . '/' . ${{ lcModel }}->id);
+
+    //asserts api response
+    expect($apiResponse->assertStatus(200)->json()['data'])->toMatchArray(${{ lcModel }}->toArray());
+
+    //assert web response
+    $webResponse->assertStatus(200)
+        ->assertViewIs('{{plrModel}}.show')
+        ->assertViewHas('resource', function ($resources) use (${{ lcModel }}) {
+            expect($resources->resolve())->toMatchArray(${{ lcModel }}->toArray());
+            return true;
+        });
+
+
+});
+
+it('can update a {{ lcModel }}', function () {
+    $web{{ Model }} = {{ lcModel }}::factory()->create();
+    $api{{ Model }} = {{ lcModel }}::factory()->create();
+
+    $newWebdata = {{ Model }}::factory()->raw();
+    $newApidata = {{ Model }}::factory()->raw();
+
+    //ensures that the updated data is never equal to the original data
+    //while (${{ lcModel }}->getAttributes() === {{ Model }}::query()->make($data)->getAttributes()) {
+    //    $data = {{ Model }}::factory()->raw();
+    //}
+
+    //asserts the updated data is not in the table
+    $this->assertDatabaseMissing('{{plrModel}}', $newWebdata);
+    $this->assertDatabaseMissing('{{plrModel}}', $newApidata);
+
+
+    $webResponse = $this->put($this->webUrl . '/' . $web{{ Model }}->id, $newWebdata);
+    $apiResponse = $this->putJson($this->apiUrl . '/' . $api{{ Model }}->id, $newApidata);
+
+    $this->assertDatabaseHas('{{plrModel}}', $newWebdata);
+    $this->assertDatabaseHas('{{plrModel}}', $newApidata);
+
+    $webResponse->assertRedirect(route('{{plrModel}}.show', $web{{ Model }}->id));
+    expect($apiResponse->json()['data'])->toMatchArray($api{{ Model }}->refresh()->toArray());
+});
+
+it('can delete a {{ lcModel }}', function () {
+    $web{{ Model }} = {{ lcModel }}::factory()->create();
+    $api{{ Model }} = {{ lcModel }}::factory()->create();
+
+    $this->assertModelExists($web{{ Model }});
+    $this->assertModelExists($api{{ Model }});
+
+    $apiResponse = $this->deleteJson($this->apiUrl . '/' . $api{{ Model }}->id);
+    $webResponse = $this->delete($this->webUrl . '/' . $web{{ Model }}->id);
+
+    $this->assertModelMissing($web{{ Model }});
+    $this->assertModelMissing($api{{ Model }});
+});
+
+
+it('validates that Store{{ Model }} request is used in storing a {{ lcModel }}', function () {
+    $request = new Store{{ Model }}Request();
+
+    $rules = $request->rules();
+    TestHelpers::assertActionUsesFormRequest(
+        {{ Model }}Controller::class,
+        'store',
+        Store{{ Model }}Request::class
+    );
+    $this->assertEquals(
+        [
+            {{ storeRules }}
+        ],
+        $rules
+    );
+});
+
+it('validates that Update{{ Model }} request is used in updating a {{ lcModel }}', function () {
+    $request = new Update{{ Model }}Request();
+
+    $rules = $request->rules();
+    TestHelpers::assertActionUsesFormRequest(
+        {{ Model }}Controller::class,
+        'update',
+        Update{{ Model }}Request::class
+    );
+    $this->assertEquals(
+        [
+            {{ updateRules }}
+        ],
+        $rules
+    );
+});
+
+
+

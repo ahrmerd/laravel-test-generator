@@ -1,17 +1,19 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "ahrmerd/laravel-test-generator",
+    "version": "1.0.0",
+    "description": "generates laravel rest web and api  test for your models on the fly",
     "keywords": [
-        ":vendor_name",
+        "ahrmerd",
         "laravel",
-        ":package_slug"
+        "test",
+        "generator"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/ahrmerd/laravel-api-test-generator",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "ahrmerd",
+            "email": "ahrmerd@gmail.com",
             "role": "Developer"
         }
     ],
@@ -35,13 +37,12 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Ahrmerd\\TestGenerator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "Ahrmerd\\TestGenerator\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -61,10 +62,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Ahrmerd\\TestGenerator\\TestGeneratorServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "TestGenerator": "Ahrmerd\\TestGenerator\\Facades\\TestGenerator"
             }
         }
     },
