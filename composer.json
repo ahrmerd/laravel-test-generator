@@ -1,6 +1,5 @@
 {
     "name": "ahrmerd/laravel-test-generator",
-    "version": "1.0.0",
     "description": "generates laravel rest web and api  test for your models on the fly",
     "keywords": [
         "ahrmerd",
