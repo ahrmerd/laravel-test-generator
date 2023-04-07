@@ -2,9 +2,9 @@
 
 namespace Ahrmerd\TestGenerator;
 
+use Ahrmerd\TestGenerator\Commands\GenerateTestsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Ahrmerd\TestGenerator\Commands\GenerateTestsCommand;
 
 class TestGeneratorServiceProvider extends PackageServiceProvider
 {

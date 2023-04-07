@@ -4,7 +4,6 @@ namespace Ahrmerd\TestGenerator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -16,8 +15,6 @@ class GenerateTestsCommand extends Command
     {--force : Overwrite existing test files}';
 
     protected $description = 'Generate API tests for all models';
-
-
 
     public function handle()
     {
@@ -55,7 +52,7 @@ class GenerateTestsCommand extends Command
 
         foreach ($files as $file) {
             // Get the fully-qualified class name for the file
-            $class = 'App\\Models\\' . pathinfo($file->getPathname(), PATHINFO_FILENAME);
+            $class = 'App\\Models\\'.pathinfo($file->getPathname(), PATHINFO_FILENAME);
 
             // Check if the class exists and is an instance of Model
             if (class_exists($class) && is_subclass_of($class, Model::class)) {
@@ -69,16 +66,16 @@ class GenerateTestsCommand extends Command
     protected function buildTests($model, $force = false)
     {
         // Generate test file name
-        $testName = Str::studly($model) . 'Test';
+        $testName = Str::studly($model).'Test';
 
         // Check if test file already exists
-        $testPath = base_path('tests/Feature/' . $testName . '.php');
+        $testPath = base_path('tests/Feature/'.$testName.'.php');
 
-        if (!$force && file_exists($testPath)) {
-            $this->error($testName . ' already exists. Use --force option to overwrite.');
+        if (! $force && file_exists($testPath)) {
+            $this->error($testName.' already exists. Use --force option to overwrite.');
+
             return;
         }
-
 
         // $controllerNamespace = $this->getNamespace($name);
         $lcModel = Str::lower($model);
@@ -94,25 +91,22 @@ class GenerateTestsCommand extends Command
         $requestRulesReplacements = $this->generateRules($model);
         $replace = array_merge($replace, $requestRulesReplacements);
 
-
-        $stub = __DIR__ . '/stubs/test.stub';
+        $stub = __DIR__.'/stubs/test.stub';
         $testContent = file_get_contents($stub);
 
         // dump(array_values($replace));
 
-
         $testContent = str_replace(array_keys($replace), array_values($replace), $testContent);
 
         file_put_contents($testPath, $testContent);
-        $this->info($testName . ' generated successfully.');
+        $this->info($testName.' generated successfully.');
     }
-
 
     private function generateRules($model)
     {
         $namespace = 'App\Http\Requests';
-        $updateFormRequestClass = $namespace . '\\' . 'Update' . Str::studly($model) . 'Request';
-        $storeFormRequestClass = $namespace . '\\' . 'Store' . Str::studly($model) . 'Request';
+        $updateFormRequestClass = $namespace.'\\'.'Update'.Str::studly($model).'Request';
+        $storeFormRequestClass = $namespace.'\\'.'Store'.Str::studly($model).'Request';
 
         try {
             $updateFormRules = (new $updateFormRequestClass())->rules();
@@ -121,11 +115,11 @@ class GenerateTestsCommand extends Command
             // dump($updateFormRequest->rules());
             // dump(implode($updateFormRequest->rules()));
 
-            $updateFormString = implode(", ", array_map(function ($value, $key) {
+            $updateFormString = implode(', ', array_map(function ($value, $key) {
                 return "\"$key\" => \"$value\"";
             }, array_values($updateFormRules), array_keys($updateFormRules)));
 
-            $storeFormString = implode(", ", array_map(function ($value, $key) {
+            $storeFormString = implode(', ', array_map(function ($value, $key) {
                 return "\"$key\" => \"$value\"";
             }, array_values($storeFormRules), array_keys($storeFormRules)));
 
@@ -135,7 +129,7 @@ class GenerateTestsCommand extends Command
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             // or throw a custom exception
-            throw new \Exception('Could not extract validation rules from form request classes of' . $model);
+            throw new \Exception('Could not extract validation rules from form request classes of'.$model);
         }
 
         return [
@@ -145,12 +139,5 @@ class GenerateTestsCommand extends Command
             '{{updateRules}}' => $updateFormString,
         ];
 
-
     }
-
-
-
-
-
-
 }
