@@ -137,8 +137,18 @@ it('can delete a {{ lcModel }}', function () {
     $apiResponse = $this->deleteJson($this->apiUrl . '/' . $api{{ Model }}->id);
     $webResponse = $this->delete($this->webUrl . '/' . $web{{ Model }}->id);
 
+    //remove the next two lines if your models uses soft deletes
     $this->assertModelMissing($web{{ Model }});
     $this->assertModelMissing($api{{ Model }});
+
+
+    //uncomment the next lines if you model uses soft deletes
+    //$this->assertSoftDeleted($web{{ Model }});
+    //$this->assertSoftDeleted($api{{ Model }});
+
+
+
+
 });
 
 

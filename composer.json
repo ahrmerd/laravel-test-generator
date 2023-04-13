@@ -62,10 +62,7 @@
         "laravel": {
             "providers": [
                 "Ahrmerd\\TestGenerator\\TestGeneratorServiceProvider"
-            ],
-            "aliases": {
-                "TestGenerator": "Ahrmerd\\TestGenerator\\Facades\\TestGenerator"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
