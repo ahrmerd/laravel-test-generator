@@ -22,7 +22,7 @@ class GenerateTestsCommand extends Command
     ';
 
     protected $description =
-        "Generates comprehensive API and web tests for Laravel Eloquent models. Speed up your testing workflow with just a few simple commands!";
+        'Generates comprehensive API and web tests for Laravel Eloquent models. Speed up your testing workflow with just a few simple commands!';
     /*
     |--------------------------------------------------------------------------
     | Package Features
@@ -47,7 +47,6 @@ class GenerateTestsCommand extends Command
     | - Automate testing of Laravel applications with confidence and ease
     |--------------------------------------------------------------------------
     */
-
 
     /**
      * Handle the command.
@@ -87,6 +86,7 @@ class GenerateTestsCommand extends Command
 
     /**
      * Get the list of model classes in the app/Models directory.
+     *
      * @return array<string> array An array of model class names.
      */
     private function getModels()
@@ -100,7 +100,7 @@ class GenerateTestsCommand extends Command
 
         foreach ($files as $file) {
             // Get the fully-qualified class name for the file
-            $class = 'App\\Models\\' . pathinfo($file->getPathname(), PATHINFO_FILENAME);
+            $class = 'App\\Models\\'.pathinfo($file->getPathname(), PATHINFO_FILENAME);
 
             // Check if the class exists and is an instance of Model and adds to the $models array
             if (class_exists($class) && is_subclass_of($class, Model::class)) {
@@ -112,27 +112,27 @@ class GenerateTestsCommand extends Command
         return $models;
     }
 
-
     /**
      * Build tests for a given model.
      *
      * Generates a test file for the specified model, including the necessary
      * replacements in the stub file.
      *
-     * @param string $model The name of the model for which tests are to be generated
-     * @param bool $force Whether to force overwrite if the test file already exists
+     * @param  string  $model The name of the model for which tests are to be generated
+     * @param  bool  $force Whether to force overwrite if the test file already exists
      * @return void
      */
     protected function buildTests($model, $force = false)
     {
         // Generate test file name
-        $testName = Str::studly($model) . 'Test';
+        $testName = Str::studly($model).'Test';
 
         // Check if test file already exists
-        $testPath = base_path('tests/Feature/' . $testName . '.php');
+        $testPath = base_path('tests/Feature/'.$testName.'.php');
 
-        if (!$force && file_exists($testPath)) {
-            $this->error($testName . ' already exists. Use --force option to overwrite.');
+        if (! $force && file_exists($testPath)) {
+            $this->error($testName.' already exists. Use --force option to overwrite.');
+
             return;
         }
 
@@ -158,15 +158,15 @@ class GenerateTestsCommand extends Command
 
         // Write test file to disk
         file_put_contents($testPath, $testContent);
-        $this->info($testName . ' generated successfully.');
+        $this->info($testName.' generated successfully.');
     }
 
-
     //the paths for the stub files
-    private $bothStubPath = __DIR__ . '/stubs/both_test.stub';
-    private $apiStubPath = __DIR__ . '/stubs/api_test.stub';
-    private $webStubPath = __DIR__ . '/stubs/web_test.stub';
+    private $bothStubPath = __DIR__.'/stubs/both_test.stub';
 
+    private $apiStubPath = __DIR__.'/stubs/api_test.stub';
+
+    private $webStubPath = __DIR__.'/stubs/web_test.stub';
 
     /**
      * Get the stub file content based on the options passed.
@@ -178,23 +178,22 @@ class GenerateTestsCommand extends Command
         $generateApi = $this->option('api'); // Check if --api option is passed
         $generateWeb = $this->option('web'); // Check if --web option is passed
 
-
         $stubPath = $this->getDefaultStubPath(); // Set the default stub file path from the config
-
 
         if ($generateApi && $generateWeb) {
             $stubPath = $this->bothStubPath;
-        } else if ($generateApi) {
+        } elseif ($generateApi) {
             $stubPath = $this->apiStubPath;
-        } else if ($generateWeb) {
+        } elseif ($generateWeb) {
             $stubPath = $this->webStubPath;
         }
+
         return file_get_contents($stubPath); // Return the content of the selected stub file
     }
 
-
     /**
      * gets a stub path based on the default option set on the config file
+     *
      * @return string: the default stub path based on the config
      */
     private function getDefaultStubPath()
@@ -203,7 +202,7 @@ class GenerateTestsCommand extends Command
 
         if ($default == 'api') {
             return $this->apiStubPath;
-        } else if ($default == 'web') {
+        } elseif ($default == 'web') {
             return $this->webStubPath;
         } else {
             return $this->bothStubPath;
@@ -211,13 +210,13 @@ class GenerateTestsCommand extends Command
 
     }
 
-
     /**
      * Generates validation rules for the specified model by instantiating the
      * corresponding form request classes and extracting the rules from them.
      *
-     * @param string $model The name of the model for which validation rules are to be generated
+     * @param  string  $model The name of the model for which validation rules are to be generated
      * @return array An array of validation rules, with keys for storeRules and updateRules
+     *
      * @throws \Exception If validation rules cannot be extracted from form request classes
      */
     private function generateRules($model)
@@ -226,8 +225,8 @@ class GenerateTestsCommand extends Command
         $namespace = 'App\Http\Requests';
 
         // Build the class names for update and store form request classes
-        $updateFormRequestClass = $namespace . '\\' . 'Update' . Str::studly($model) . 'Request';
-        $storeFormRequestClass = $namespace . '\\' . 'Store' . Str::studly($model) . 'Request';
+        $updateFormRequestClass = $namespace.'\\'.'Update'.Str::studly($model).'Request';
+        $storeFormRequestClass = $namespace.'\\'.'Store'.Str::studly($model).'Request';
 
         try {
             if (class_exists($updateFormRequestClass) && class_exists($storeFormRequestClass)) {
@@ -244,12 +243,12 @@ class GenerateTestsCommand extends Command
                     return "\"$key\" => \"$value\"";
                 }, array_values($storeFormRules), array_keys($storeFormRules)));
             } else {
-                throw new Exception('Could not extract validation rules from form request classes of ' . $model);
+                throw new Exception('Could not extract validation rules from form request classes of '.$model);
             }
 
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            throw new Exception('Could not extract validation rules from form request classes of ' . $model);
+            throw new Exception('Could not extract validation rules from form request classes of '.$model);
         }
 
         // Return the rules as replacements for stub file
