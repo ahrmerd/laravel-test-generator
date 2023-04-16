@@ -1,13 +1,13 @@
 {
     "name": "ahrmerd/laravel-test-generator",
-    "description": "generates laravel rest web and api  test for your models on the fly",
+    "description": "The Ahrmerd/TestGenerator package is a Laravel command-line tool that automatically generates API and web tests for your Eloquent models. With just a few simple commands, you can quickly generate comprehensive test files that cover CRUD operations, validation, and other common use cases for your models. The package provides options to generate tests for all models in your application or for specific models, and supports overwriting existing test files with the --force option. Additionally, it automatically generates test content based on your model's form request classes, making it easy to ensure your tests reflect your application's validation rules. Speed up your Laravel testing workflow with the Ahrmerd/TestGenerator package",
     "keywords": [
         "ahrmerd",
         "laravel",
         "test",
         "generator"
     ],
-    "homepage": "https://github.com/ahrmerd/laravel-api-test-generator",
+    "homepage": "https://github.com/ahrmerd/laravel-test-generator",
     "license": "MIT",
     "authors": [
         {

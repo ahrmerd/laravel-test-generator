@@ -1,0 +1,144 @@
+<?php
+
+use App\Http\Controllers\{{ Model }}Controller;
+use App\Http\Requests\Update{{ Model }}Request;
+use App\Http\Requests\Store{{ Model }}Request;
+use App\Models\{{ Model }};
+use Ahrmerd\TestGenerator\TestHelpers;
+use App\Models\User;
+use function Pest\Laravel\actingAs;
+use Laravel\Sanctum\Sanctum;
+
+
+/**
+ * NOTE: this are generated test based on your model and form request. You can modify the tests to suite your usecase
+ * ensure your factories and form request are properly set
+ */
+
+beforeEach(function () {
+    $this->webUrl = "/{{plrModel}}";
+    $user = User::factory()->create();
+    $this->user = actingAs($user);
+
+});
+
+it('can list all {{plrModel}}', function (){
+    ${{plrModel}}_ids = {{ Model }}::factory()->count(5)->create()->pluck('id');
+    ${{plrModel}} = {{ Model }}::query()->findMany(${{plrModel}}_ids);
+
+    $webResponse = $this->get($this->webUrl);
+
+    //checks webResponse
+    $webResponse->assertStatus(200)
+        ->assertViewIs('{{plrModel}}.index')
+        ->assertViewHas('resource', function ($resources) use (${{plrModel}}) {
+            expect($resources->resolve())->toMatchArray(${{plrModel}}->toArray());
+            return true;
+        });
+
+});
+
+
+it('can create a {{ lcModel }}', function () {
+
+    //ensures all {{ lcModel }} are deleted
+    {{ Model }}::query()->delete();
+    $data = {{ Model }}::factory()->raw();
+
+    //web assertion
+    $webResponse = $this->post($this->webUrl, $data);
+    $this->assertDatabaseHas('{{plrModel}}', $data);
+    $id = {{ Model }}::query()->latest()->pluck('id')->first();
+    $webResponse->assertRedirect(route('{{plrModel}}.show', $id));
+
+
+});
+
+
+it('can show a {{ lcModel }}', function () {
+    ${{ lcModel }} = {{ Model }}::factory()->create();
+
+    $webResponse = $this->get($this->webUrl . '/' . ${{ lcModel }}->id);
+
+    //assert web response
+    $webResponse->assertStatus(200)
+        ->assertViewIs('{{plrModel}}.show')
+        ->assertViewHas('resource', function ($resources) use (${{ lcModel }}) {
+            expect($resources->resolve())->toMatchArray(${{ lcModel }}->toArray());
+            return true;
+        });
+
+
+});
+
+it('can update a {{ lcModel }}', function () {
+    $web{{ Model }} = {{ lcModel }}::factory()->create();
+
+    $newWebdata = {{ Model }}::factory()->raw();
+
+    //asserts the updated data is not yet in the table
+    $this->assertDatabaseMissing('{{plrModel}}', $newWebdata);
+
+
+    $webResponse = $this->put($this->webUrl . '/' . $web{{ Model }}->id, $newWebdata);
+
+    //asserts the updated data is now in the table
+    $this->assertDatabaseHas('{{plrModel}}', $newWebdata);
+
+    $webResponse->assertRedirect(route('{{plrModel}}.show', $web{{ Model }}->id));
+});
+
+it('can delete a {{ lcModel }}', function () {
+    $web{{ Model }} = {{ lcModel }}::factory()->create();
+
+    $this->assertModelExists($web{{ Model }});
+
+    $webResponse = $this->delete($this->webUrl . '/' . $web{{ Model }}->id);
+
+    //remove the next line if your models uses soft deletes
+    $this->assertModelMissing($web{{ Model }});
+
+
+    //uncomment the next line if you model uses soft deletes
+    //$this->assertSoftDeleted($web{{ Model }});
+
+
+});
+
+
+it('validates that Store{{ Model }} request is used in storing a {{ lcModel }}', function () {
+    $request = new Store{{ Model }}Request();
+
+    $rules = $request->rules();
+    TestHelpers::assertActionUsesFormRequest(
+        {{ Model }}Controller::class,
+        'store',
+        Store{{ Model }}Request::class
+    );
+    $this->assertEquals(
+        [
+            {{ storeRules }}
+        ],
+        $rules
+    );
+});
+
+it('validates that Update{{ Model }} request is used in updating a {{ lcModel }}', function () {
+    $request = new Update{{ Model }}Request();
+
+    $rules = $request->rules();
+    TestHelpers::assertActionUsesFormRequest(
+        {{ Model }}Controller::class,
+        'update',
+        Update{{ Model }}Request::class
+    );
+    $this->assertEquals(
+        [
+            {{ updateRules }}
+        ],
+        $rules
+    );
+});
+
+
+

@@ -43,7 +43,7 @@ it('can list all {{plrModel}}', function (){
     //checks webResponse
     $webResponse->assertStatus(200)
         ->assertViewIs('{{plrModel}}.index')
-        ->assertViewHas('resource', function ($resources) use (${{plrModel}}) {
+        ->assertViewHas('{{ plrModel }}', function ($resources) use (${{plrModel}}) {
             expect($resources->resolve())->toMatchArray(${{plrModel}}->toArray());
             return true;
         });
@@ -83,6 +83,7 @@ it('can create a {{ lcModel }}', function () {
 it('can show a {{ lcModel }}', function () {
     ${{ lcModel }} = {{ Model }}::factory()->create();
 
+
     $apiResponse = $this->getJson($this->apiUrl . '/' . ${{ lcModel }}->id);
     $webResponse = $this->get($this->webUrl . '/' . ${{ lcModel }}->id);
 
@@ -92,7 +93,7 @@ it('can show a {{ lcModel }}', function () {
     //assert web response
     $webResponse->assertStatus(200)
         ->assertViewIs('{{plrModel}}.show')
-        ->assertViewHas('resource', function ($resources) use (${{ lcModel }}) {
+        ->assertViewHas('{{ lcModel }}', function ($resources) use (${{ lcModel }}) {
             expect($resources->resolve())->toMatchArray(${{ lcModel }}->toArray());
             return true;
         });
@@ -112,7 +113,7 @@ it('can update a {{ lcModel }}', function () {
     //    $data = {{ Model }}::factory()->raw();
     //}
 
-    //asserts the updated data is not in the table
+    //asserts the updated data is not yet in the table
     $this->assertDatabaseMissing('{{plrModel}}', $newWebdata);
     $this->assertDatabaseMissing('{{plrModel}}', $newApidata);
 
@@ -120,6 +121,8 @@ it('can update a {{ lcModel }}', function () {
     $webResponse = $this->put($this->webUrl . '/' . $web{{ Model }}->id, $newWebdata);
     $apiResponse = $this->putJson($this->apiUrl . '/' . $api{{ Model }}->id, $newApidata);
 
+
+    //asserts the updated data is now in the table
     $this->assertDatabaseHas('{{plrModel}}', $newWebdata);
     $this->assertDatabaseHas('{{plrModel}}', $newApidata);
 

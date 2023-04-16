@@ -13,7 +13,7 @@ class TestGeneratorServiceProvider extends PackageServiceProvider
 
         $package
             ->name('TestGenerator')
-            // ->hasConfigFile()
+            ->hasConfigFile()
             // ->hasViews()
             // ->hasMigration('create_skeleton_table')
             ->hasCommand(GenerateTestsCommand::class);
