@@ -24,8 +24,8 @@ composer require pestphp/pest-plugin-laravel --dev
 ```
 
 Once installed, run the following Artisan command to publish the configuration file:
-```
-sh php artisan vendor:publish --tag=TestGenerator-config 
+```sh
+php artisan vendor:publish --tag=TestGenerator-config 
 ```
 
 ## Compatibility
@@ -47,22 +47,21 @@ Once installed, you can use Ahrmerd/TestGenerator via the command-line interface
 
 ### - Generate tests for a specific model:
 
-```
-sh
+```sh
  php artisan generate:tests ModelName
 ```
 
 This command will generate test files for the ModelName model in your Laravel application. The test files will contain test methods for common CRUD operations such as create, read, update, and delete, based on the --api or --web options provided (default is --api). You can also add custom test methods in the generated test files.
 
 ### - Generate tests for all models:
-```
-sh php artisan generate:tests --all
+```sh 
+php artisan generate:tests --all
 ```
 This command will generate test files for all models in your Laravel application. Each test file will contain test methods for common CRUD operations, based on the --api or --web options provided (default is --api), as well as a template for writing custom test methods for additional testing scenarios.
 
 ### - Overwrite existing test files:
-```
-sh php artisan generate:tests ModelName --force
+```sh 
+php artisan generate:tests ModelName --force
 ```
 By default, Ahrmerd/TestGenerator will not overwrite existing test files. However, you can use the --force flag to overwrite existing test files if needed. Please use this option with caution, as it will overwrite any existing test files for the specified model.
 
