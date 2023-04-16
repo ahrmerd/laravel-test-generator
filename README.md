@@ -42,7 +42,9 @@ Once installed, you can use Ahrmerd/TestGenerator via the command-line interface
 
 ### - Generate tests for a specific model:
 
-```sh php artisan generate:tests ModelName```
+```
+sh php artisan generate:tests ModelName
+```
 
 This command will generate test files for the ModelName model in your Laravel application. The test files will contain test methods for common CRUD operations such as create, read, update, and delete, based on the --api or --web options provided (default is --api). You can also add custom test methods in the generated test files.
 
